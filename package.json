@@ -1,0 +1,25 @@
+{
+  "name": "grasshopper-cli",
+  "version": "0.0.1",
+  "description": "Command line interface that manages the grasshopper data management system.",
+  "main": "bin/grasshopper-admin.js",
+  "scripts": {
+    "start": "./bin/grasshopper"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Solid-Interactive/grasshopper-cli.git"
+  },
+  "author": "Travis McHattie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Solid-Interactive/grasshopper-cli/issues"
+  },
+  "homepage": "https://github.com/Solid-Interactive/grasshopper-cli",
+  "dependencies": {
+    "grunt": "~0.4.4",
+    "commander": "~2.2.0",
+    "inquirer": "~0.4.1",
+    "cli-color": "~0.2.3"
+  }
+}

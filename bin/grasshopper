@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+var program = require('commander'),
+    inquirer = require("inquirer"),
+    clc = require('cli-color'),
+    fs = require('fs');
+
+function notice(str){
+    console.log(clc.blue(str));
+}
+
+function statement(str){
+    console.log(clc.green(str));
+    console.log('');
+}
+
+function printWelcome(){
+    notice('');
+    notice('*****************************************************************');
+    notice('****  Grasshopper DMS CLI                                    ****');
+    notice('*****************************************************************');
+    notice('');
+}
+
+
+function install(){
+    var questions = [{
+            type: 'list',
+            name: 'app',
+            message: 'What product do you want to install?',
+            choices: ['Admin with API', 'Admin only', 'API only']
+        },{
+            type: 'list',
+            name: 'environment',
+            message: 'Where is this instance going to be deployed?',
+            choices: ['local server', 'heroku'],
+            default: 'local server'
+        },{
+            type: 'input',
+            name: 'path',
+            message: 'Enter the path for your working directory',
+            default: process.cwd()
+        }];
+
+    statement('Installing grasshopper, please answer a few questions to get started.');
+    inquirer.prompt(questions, function( answers ) {
+        // Use user feedback for... whatever!!
+    });
+}
+
+program
+    .version('0.0.1')
+    .option('install', 'Install');
+
+program.on('install', install);
+
+printWelcome();
+program.parse(process.argv);
+

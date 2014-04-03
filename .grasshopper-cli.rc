@@ -1,0 +1,7 @@
+{
+    "repos":{
+        "api":"https://github.com/Solid-Interactive/grasshopper-api-js.git",
+        "admin":"https://github.com/Solid-Interactive/grasshopper-admin.git",
+        "combined": ""
+    }
+}
