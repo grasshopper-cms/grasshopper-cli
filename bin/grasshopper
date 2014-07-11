@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
+    ProgressBar = require('progress'),
     inquirer = require("inquirer"),
     clc = require('cli-color'),
-    fs = require('fs');
+    fs = require('fs'),
+    q = require('q');
 
 function notice(str){
     console.log(clc.blue(str));
@@ -14,45 +16,153 @@ function statement(str){
     console.log('');
 }
 
+function error(str) {
+    console.log(clc.red(str));
+    console.log('');
+}
+
+function trace(str) {
+    console.log(clc.magenta(str));
+    console.log('');
+}
+
 function printWelcome(){
     notice('');
-    notice('*****************************************************************');
-    notice('****  Grasshopper DMS CLI                                    ****');
-    notice('*****************************************************************');
+    notice('                      ___ --.');
+    notice('                    .`   \'.  \\');
+    notice('               ,_          | |');
+    notice('         .""""""|\'.""""""-./-;');
+    notice('       |__.----| \\ \'.      |0 \\');
+    notice('    __/ /  /  /|  \\  \'.____|__|');
+    notice('    `""""""""`"|`""\'---\'|  \\');
+    notice('           .---\'        /_  |_');
     notice('');
 }
 
+function validateProject(projectHome){
+    var validate = require('../lib/validate');
+    return validate.hasPackageFile(projectHome).then(validate.hasGit);
+}
 
-function install(){
+function installNpm(name){
+    var exec = require('child_process').exec,
+        cmd = 'npm install ' + name + ' --save',
+        child = exec(cmd),
+        deferred = q.defer();
+
+    trace('RUNNING: ' + cmd);
+
+    child.on('error', function(err){
+        deferred.reject(err);
+    });
+
+    child.on('close', function(code){
+        if(code === 0){
+            deferred.resolve();
+        }
+        else {
+            deferred.reject(new Error(code));
+        }
+    });
+
+    return deferred.promise;
+}
+
+function installNpms(){
+    var bar = new ProgressBar('  Please wait: [:bar] :elapsed(sec)', {
+        complete: '='
+        , incomplete: ' '
+        , width: 60
+        , total: 60
+    }),
+        complete = false;
+
+    function forward() {
+        if(!complete){
+            bar.tick(1);
+            if (bar.curr > 58) {
+                backward();
+            } else {
+                setTimeout(forward, 50);
+            }
+        }
+    }
+
+    function backward() {
+        if(!complete){
+            bar.tick(-1);
+            if (bar.curr == 1) {
+                forward();
+            } else {
+                setTimeout(backward, 50);
+            }
+        }
+    }
+
+    installNpm('grasshopper-api').then(
+        function(){
+            bar.update(1);
+            trace('');
+            trace('Complete...');
+
+            installNpm('grasshopper-admin').then(
+                function(){
+                    complete = true;
+                    bar.update(1);
+                    bar.complete = true;
+                    bar.terminate();
+
+                    trace('Complete...');
+                },
+                function(err){
+                    error('Could not install npm `grasshopper-admin` error: ' + err.message);
+                }
+            );
+        },
+        function(err){
+            error('Could not install npm `grasshopper-api` error: ' + err.message);
+        }
+    );
+
+    setTimeout(function(){
+        forward();
+    },10);
+}
+
+function setup(){
     var questions = [{
-            type: 'list',
-            name: 'app',
-            message: 'What product do you want to install?',
-            choices: ['Admin with API', 'Admin only', 'API only']
-        },{
-            type: 'list',
-            name: 'environment',
-            message: 'Where is this instance going to be deployed?',
-            choices: ['local server', 'heroku'],
-            default: 'local server'
-        },{
             type: 'input',
             name: 'path',
-            message: 'Enter the path for your working directory',
+            message: 'Enter your project\'s home directory',
             default: process.cwd()
+        },{
+            type: 'list',
+            name: 'installType',
+            message: 'What type of install would you like?',
+            choices: ['Express', 'Custom']
         }];
 
-    statement('Installing grasshopper, please answer a few questions to get started.');
+    statement('Grasshopper Setup, please answer a few questions to get started.');
+
     inquirer.prompt(questions, function( answers ) {
-        // Use user feedback for... whatever!!
+        if(answers.installType === 'Express') {
+            validateProject(answers.path).then(
+                function(){
+                    installNpms();
+                },
+                function(err){
+                    error(err.message);
+                }
+            );
+        }
     });
 }
 
 program
     .version('0.0.1')
-    .option('install', 'Install');
+    .option('setup', 'Setup');
 
-program.on('install', install);
+program.on('setup', setup);
 
 printWelcome();
 program.parse(process.argv);
