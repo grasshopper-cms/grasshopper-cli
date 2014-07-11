@@ -41,7 +41,7 @@ function printWelcome(){
 
 function validateProject(projectHome){
     var validate = require('../lib/validate');
-    return validate.hasPackageFile(projectHome).then(validate.hasGit);
+    return validate.hasPackageFile(projectHome);
 }
 
 function installNpm(name){

@@ -1,22 +1,10 @@
 var should = require('chai').should(),
-    path = require('path'),
-    Git = require('git').Git;
+    path = require('path');
 
 describe('Test the project validating routines', function(){
     'use strict';
 
     var validate = require('../lib/validate');
-
-    it('Check and see if the user has git installed', function(done) {
-        validate.hasGit().then(
-            function(success){
-                success.should.equal(true);
-            },
-            function(err){
-                err.should.not.exist;
-            }
-        ).done(done);
-    });
 
     it('Check and see if package.json file exists', function(done) {
         validate.hasPackageFile('.').then(
