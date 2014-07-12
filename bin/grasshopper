@@ -5,7 +5,22 @@ var program = require('commander'),
     inquirer = require("inquirer"),
     clc = require('cli-color'),
     fs = require('fs'),
-    q = require('q');
+    path = require('path'),
+    q = require('q'),
+    Mongo = require('../lib/mongo'),
+    _ = require('lodash'),
+    guid = (function() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return function() {
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                s4() + '-' + s4() + s4() + s4();
+        };
+    })();;
+
 
 function notice(str){
     console.log(clc.blue(str));
@@ -39,9 +54,9 @@ function printWelcome(){
     notice('');
 }
 
-function validateProject(projectHome){
+function validateProject(config){
     var validate = require('../lib/validate');
-    return validate.hasPackageFile(projectHome);
+    return validate.hasPackageFile(config);
 }
 
 function installNpm(name){
@@ -68,14 +83,18 @@ function installNpm(name){
     return deferred.promise;
 }
 
-function installNpms(){
+function installNpms(config){
     var bar = new ProgressBar('  Please wait: [:bar] :elapsed(sec)', {
-        complete: '='
-        , incomplete: ' '
-        , width: 60
-        , total: 60
-    }),
+            complete: '='
+            , incomplete: ' '
+            , width: 60
+            , total: 60
+        }),
+        deferred = q.defer(),
         complete = false;
+
+    deferred.resolve(config);
+    return deferred.promise;
 
     function forward() {
         if(!complete){
@@ -113,20 +132,180 @@ function installNpms(){
                     bar.terminate();
 
                     trace('Complete...');
+                    deferred.resolve(config);
                 },
                 function(err){
                     error('Could not install npm `grasshopper-admin` error: ' + err.message);
+                    throw err;
                 }
             );
         },
         function(err){
             error('Could not install npm `grasshopper-api` error: ' + err.message);
+            throw err;
         }
     );
 
     setTimeout(function(){
         forward();
     },10);
+
+    return deferred.promise;
+}
+
+//Function will take a mongo connection url and build the grasshopper configuration section for db and pass it along
+function configureMongoDatabase(config) {
+    var questions = [{
+            type: 'input',
+            name: 'mongoUrl',
+            message: 'Enter the full MongoDB connection URL:'
+        }],
+        deferred = q.defer();
+
+    function configDb(){
+        inquirer.prompt(questions, function( answers ) {
+            var db = new Mongo(answers.mongoUrl);
+
+            if( answers.mongoUrl  === '') {
+                error('');
+                error('Database `URL`(mongodb://[username:password@]host1[:port1]) is required. Please try again.');
+                configDb();
+            }
+            else {
+                db.testConnection().then(
+                    function(){
+                        deferred.resolve(_.merge(config, { db: db.buildConfig() }));
+                    },
+                    function(err){
+                        error(err.message);
+                        configDb();
+                    }
+                );
+            }
+        });
+    }
+
+    statement('Configuring MongoDB connection...');
+    configDb();
+
+    return deferred.promise;
+}
+
+function configureLogger(config){
+    var questions = [{
+            type: 'input',
+            name: 'appName',
+            message: 'What is the name of your application?'
+        },{
+            type: 'input',
+            name: 'machineName',
+            message: 'What is the name of this machine?'
+        },{
+            type: 'checkbox',
+            name: 'types',
+            message: 'Select adapters that you would like to use?',
+            choices: ['Console', 'File']
+        }],
+        deferred = q.defer();
+
+    function buildConfig(conf) {
+        var logger = {
+                adapters: []
+            };
+
+        _.each(conf.types, function(type) {
+            var adapter = {
+                type: type.toLowerCase(),
+                application: conf.appName,
+                machine: conf.machineName
+            };
+
+            if(type === 'File'){
+                adapter.path = conf.fileLocation;
+            }
+
+            logger.adapters.push(adapter);
+        });
+
+        deferred.resolve(_.merge(config, logger));
+    }
+
+    function askQuestions(){
+        inquirer.prompt(questions, function( answers ) {
+            if(
+                _.find(answers.types, function(type) {
+                    return type === 'File'
+                })
+            ){
+                inquirer.prompt([{
+                    type: 'input',
+                    name: 'fileLocation',
+                    message: 'Where do you want to save your logs?',
+                    default: path.join(config.project.home, 'logs', answers.appName + '.log')
+                }], function( fileLocation ) {
+                    buildConfig(_.merge(answers, fileLocation));
+                });
+            }
+            else {
+                buildConfig(answers);
+            }
+
+        });
+    }
+
+    statement('Configuring Grasshopper Logging...');
+    askQuestions();
+
+    return deferred.promise;
+}
+
+function configureApi(config){
+    return configureMongoDatabase(config);
+}
+
+function writeConfig(config){
+    var tpl = _.template(fs.readFileSync(path.join(__dirname, '../templates/core.tpl'), 'utf-8')),
+        output = tpl(config),
+        deferred = q.defer();
+
+    fs.writeFile(config.project.home, ouput, 'utf-8', function(err){
+        if(err){
+            throw err;
+            return;
+        }
+        deferred.resolve(config);
+    });
+
+    return deferred.promise;
+}
+
+function configureAdmin(projectHome){
+    /*var questions = [{
+        type: 'input',
+        name: 'path',
+        message: 'Where do you want ',
+        default: process.cwd()
+    },{
+        type: 'list',
+        name: 'installType',
+        message: 'What type of install would you like?',
+        choices: ['Express', 'Custom']
+    }];
+
+    statement('Grasshopper Setup, please answer a few questions to get started.');
+
+    inquirer.prompt(questions, function( answers ) {
+        if(answers.installType === 'Express') {
+            validateProject(answers.path).then(
+                function(){
+                    installNpms();
+                },
+                function(err){
+                    error(err.message);
+                }
+            );
+        }
+    });*/
 }
 
 function setup(){
@@ -145,15 +324,27 @@ function setup(){
     statement('Grasshopper Setup, please answer a few questions to get started.');
 
     inquirer.prompt(questions, function( answers ) {
-        if(answers.installType === 'Express') {
-            validateProject(answers.path).then(
-                function(){
-                    installNpms();
+        var config = {
+                project: {
+                    home: answers.path
                 },
-                function(err){
-                    error(err.message);
+                crypto: {
+                    secret: guid()
                 }
-            );
+            };
+
+        if(answers.installType === 'Express') {
+            validateProject(config)
+                .then(installNpms)
+                .then(configureApi)
+                .then(configureLogger)
+                .then(writeConfig)
+                .catch(function(err){
+                    error(err.message);
+                })
+                .done(function(results){
+                    console.log(results);
+                });
         }
     });
 }
