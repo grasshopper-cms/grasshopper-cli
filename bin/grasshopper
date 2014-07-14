@@ -6,7 +6,6 @@ var program = require('commander'),
     fs = require('fs'),
     path = require('path'),
     q = require('q'),
-    npm = require('../lib/npm'),
     logger = require('../lib/logger'),
     output = require('../lib/output'),
     steps = require('../lib/steps'),
@@ -34,42 +33,6 @@ program.parse(process.argv);
 function validateProject(config){
     var validate = require('../lib/validate');
     return validate.hasPackageFile(config);
-}
-
-function installNpms(config){
-    var deferred = q.defer(),
-        progress = output.progress({label: 'Installing grasshopper-api'});
-
-
-    deferred.resolve(config);
-    return deferred.promise;
-
-    progress.start();
-    npm.install('grasshopper-api').then(
-        function(){
-            progress.complete();
-
-            progress = output.progress({label: 'Installing grasshopper-admin'});
-            progress.start();
-
-            npm.install('grasshopper-admin').then(
-                function(){
-                    progress.complete();
-                    deferred.resolve(config);
-                },
-                function(err){
-                    logger.error('Could not install npm `grasshopper-admin` error: ' + err.message);
-                    throw err;
-                }
-            );
-        },
-        function(err){
-            logger.error('Could not install npm `grasshopper-api` error: ' + err.message);
-            throw err;
-        }
-    );
-
-    return deferred.promise;
 }
 
 function writeConfig(config){
@@ -143,7 +106,7 @@ function setup(){
 
         if(answers.installType === 'Quick') {
             validateProject(config)
-                .then(installNpms)
+                .then(steps.npms)
                 .then(steps.database)
                 //.then(configureAssets)
                 .then(steps.logger)
