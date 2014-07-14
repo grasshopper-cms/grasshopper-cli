@@ -32,23 +32,21 @@ function installNpms(config){
     var deferred = q.defer(),
         progress = output.progress({label: 'Installing grasshopper-api'});
 
+    progress.start();
     //deferred.resolve(config);
     //return deferred.promise;
 
 
     npm.install('grasshopper-api').then(
         function(){
-            clearTimeout(progress);
-            logger.trace('');
-            logger.trace('Complete...');
+            progress.complete();
 
             progress = output.progress({label: 'Installing grasshopper-admin'});
+            progress.start();
 
             npm.install('grasshopper-admin').then(
                 function(){
-                    clearTimeout(progress);
-                    logger.trace('');
-                    logger.trace('Complete...');
+                    progress.complete();
                     deferred.resolve(config);
                 },
                 function(err){
