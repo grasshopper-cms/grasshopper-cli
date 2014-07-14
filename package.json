@@ -22,8 +22,6 @@
     "inquirer": "~0.4.1",
     "cli-color": "~0.2.3",
     "q": "^1.0.1",
-    "grasshopper-api": "^0.14.11-auth",
-    "grasshopper-admin": "^0.26.6",
     "mongodb": "^1.4.7",
     "lodash": "^2.4.1"
   },
