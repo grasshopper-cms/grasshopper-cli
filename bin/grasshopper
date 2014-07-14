@@ -1,13 +1,15 @@
 #!/usr/bin/env node
+'use strict';
 
 var program = require('commander'),
-    ProgressBar = require('progress'),
     inquirer = require("inquirer"),
-    clc = require('cli-color'),
     fs = require('fs'),
     path = require('path'),
     q = require('q'),
     Mongo = require('../lib/mongo'),
+    npm = require('../lib/npm'),
+    logger = require('../lib/logger'),
+    output = require('../lib/output'),
     _ = require('lodash'),
     guid = (function() {
         function s4() {
@@ -19,136 +21,47 @@ var program = require('commander'),
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
         };
-    })();;
-
-
-function notice(str){
-    console.log(clc.blue(str));
-}
-
-function statement(str){
-    console.log(clc.green(str));
-    console.log('');
-}
-
-function error(str) {
-    console.log(clc.red(str));
-    console.log('');
-}
-
-function trace(str) {
-    console.log(clc.magenta(str));
-    console.log('');
-}
-
-function printWelcome(){
-    notice('');
-    notice('                      ___ --.');
-    notice('                    .`   \'.  \\');
-    notice('               ,_          | |');
-    notice('         .""""""|\'.""""""-./-;');
-    notice('       |__.----| \\ \'.      |0 \\');
-    notice('    __/ /  /  /|  \\  \'.____|__|');
-    notice('    `""""""""`"|`""\'---\'|  \\');
-    notice('           .---\'        /_  |_');
-    notice('');
-}
+    })();
 
 function validateProject(config){
     var validate = require('../lib/validate');
     return validate.hasPackageFile(config);
 }
 
-function installNpm(name){
-    var exec = require('child_process').exec,
-        cmd = 'npm install ' + name + ' --save',
-        child = exec(cmd),
-        deferred = q.defer();
-
-    trace('RUNNING: ' + cmd);
-
-    child.on('error', function(err){
-        deferred.reject(err);
-    });
-
-    child.on('close', function(code){
-        if(code === 0){
-            deferred.resolve();
-        }
-        else {
-            deferred.reject(new Error(code));
-        }
-    });
-
-    return deferred.promise;
-}
-
 function installNpms(config){
-    var bar = new ProgressBar('  Please wait: [:bar] :elapsed(sec)', {
-            complete: '='
-            , incomplete: ' '
-            , width: 60
-            , total: 60
-        }),
-        deferred = q.defer(),
-        complete = false;
+    var deferred = q.defer(),
+        progress = output.progress({label: 'Installing grasshopper-api'});
 
-    deferred.resolve(config);
-    return deferred.promise;
+    //deferred.resolve(config);
+    //return deferred.promise;
 
-    function forward() {
-        if(!complete){
-            bar.tick(1);
-            if (bar.curr > 58) {
-                backward();
-            } else {
-                setTimeout(forward, 50);
-            }
-        }
-    }
 
-    function backward() {
-        if(!complete){
-            bar.tick(-1);
-            if (bar.curr == 1) {
-                forward();
-            } else {
-                setTimeout(backward, 50);
-            }
-        }
-    }
-
-    installNpm('grasshopper-api').then(
+    npm.install('grasshopper-api').then(
         function(){
-            bar.update(1);
-            trace('');
-            trace('Complete...');
+            clearTimeout(progress);
+            logger.trace('');
+            logger.trace('Complete...');
 
-            installNpm('grasshopper-admin').then(
+            progress = output.progress({label: 'Installing grasshopper-admin'});
+
+            npm.install('grasshopper-admin').then(
                 function(){
-                    complete = true;
-                    bar.update(1);
-                    bar.complete = true;
-                    bar.terminate();
-
-                    trace('Complete...');
+                    clearTimeout(progress);
+                    logger.trace('');
+                    logger.trace('Complete...');
                     deferred.resolve(config);
                 },
                 function(err){
-                    error('Could not install npm `grasshopper-admin` error: ' + err.message);
+                    logger.error('Could not install npm `grasshopper-admin` error: ' + err.message);
                     throw err;
                 }
             );
         },
         function(err){
-            error('Could not install npm `grasshopper-api` error: ' + err.message);
+            logger.error('Could not install npm `grasshopper-api` error: ' + err.message);
             throw err;
         }
     );
-
-    setTimeout(function(){
-        forward();
-    },10);
 
     return deferred.promise;
 }
@@ -167,8 +80,8 @@ function configureMongoDatabase(config) {
             var db = new Mongo(answers.mongoUrl);
 
             if( answers.mongoUrl  === '') {
-                error('');
-                error('Database `URL`(mongodb://[username:password@]host1[:port1]) is required. Please try again.');
+                logger.error('');
+                logger.error('Database `URL`(mongodb://[username:password@]host1[:port1]) is required. Please try again.');
                 configDb();
             }
             else {
@@ -177,7 +90,7 @@ function configureMongoDatabase(config) {
                         deferred.resolve(_.merge(config, { db: db.buildConfig() }));
                     },
                     function(err){
-                        error(err.message);
+                        logger.error(err.message);
                         configDb();
                     }
                 );
@@ -185,7 +98,8 @@ function configureMongoDatabase(config) {
         });
     }
 
-    statement('Configuring MongoDB connection...');
+    logger.statement('');
+    logger.statement('Configuring MongoDB connection...');
     configDb();
 
     return deferred.promise;
@@ -234,7 +148,7 @@ function configureLogger(config){
         inquirer.prompt(questions, function( answers ) {
             if(
                 _.find(answers.types, function(type) {
-                    return type === 'File'
+                    return type === 'File';
                 })
             ){
                 inquirer.prompt([{
@@ -253,7 +167,8 @@ function configureLogger(config){
         });
     }
 
-    statement('Configuring Grasshopper Logging...');
+    logger.statement('');
+    logger.statement('Configuring Grasshopper Logging...');
     askQuestions();
 
     return deferred.promise;
@@ -268,10 +183,9 @@ function writeConfig(config){
         output = tpl(config),
         deferred = q.defer();
 
-    fs.writeFile(config.project.home, ouput, 'utf-8', function(err){
+    fs.writeFile(config.project.home, output, 'utf-8', function(err){
         if(err){
             throw err;
-            return;
         }
         deferred.resolve(config);
     });
@@ -318,10 +232,10 @@ function setup(){
             type: 'list',
             name: 'installType',
             message: 'What type of install would you like?',
-            choices: ['Express', 'Custom']
+            choices: ['Quick', 'Custom']
         }];
 
-    statement('Grasshopper Setup, please answer a few questions to get started.');
+    logger.statement('Grasshopper Setup, please answer a few questions to get started.');
 
     inquirer.prompt(questions, function( answers ) {
         var config = {
@@ -333,14 +247,14 @@ function setup(){
                 }
             };
 
-        if(answers.installType === 'Express') {
+        if(answers.installType === 'Quick') {
             validateProject(config)
                 .then(installNpms)
                 .then(configureApi)
                 .then(configureLogger)
                 .then(writeConfig)
                 .catch(function(err){
-                    error(err.message);
+                    logger.error(err.message);
                 })
                 .done(function(results){
                     console.log(results);
@@ -355,6 +269,6 @@ program
 
 program.on('setup', setup);
 
-printWelcome();
+output.welcome();
 program.parse(process.argv);
 
