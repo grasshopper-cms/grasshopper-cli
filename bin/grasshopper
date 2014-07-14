@@ -23,6 +23,14 @@ var program = require('commander'),
         };
     })();
 
+program.version('0.0.1')
+       .option('setup', 'Setup');
+
+program.on('setup', setup);
+
+output.welcome();
+program.parse(process.argv);
+
 function validateProject(config){
     var validate = require('../lib/validate');
     return validate.hasPackageFile(config);
@@ -260,13 +268,3 @@ function setup(){
         }
     });
 }
-
-program
-    .version('0.0.1')
-    .option('setup', 'Setup');
-
-program.on('setup', setup);
-
-output.welcome();
-program.parse(process.argv);
-
