@@ -2,121 +2,13 @@
 'use strict';
 
 var program = require('commander'),
-    inquirer = require("inquirer"),
-    fs = require('fs'),
-    path = require('path'),
-    q = require('q'),
-    logger = require('../lib/logger'),
     output = require('../lib/output'),
-    steps = require('../lib/steps'),
-    _ = require('lodash'),
-    guid = (function() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return function() {
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                s4() + '-' + s4() + s4() + s4();
-        };
-    })();
+    commands = require('../lib/commands');
 
 program.version('0.0.1')
        .option('setup', 'Setup');
 
-program.on('setup', setup);
+program.on('setup', commands.setup);
 
 output.welcome();
 program.parse(process.argv);
-
-function validateProject(config){
-    var validate = require('../lib/validate');
-    return validate.hasPackageFile(config);
-}
-
-function writeConfig(config){
-    var tpl = _.template(fs.readFileSync(path.join(__dirname, '../templates/core.tpl'), 'utf-8')),
-        output = tpl(config),
-        deferred = q.defer();
-
-    fs.writeFile(config.project.home, output, 'utf-8', function(err){
-        if(err){
-            throw err;
-        }
-        deferred.resolve(config);
-    });
-
-    return deferred.promise;
-}
-
-function configureAdmin(projectHome){
-    /*var questions = [{
-        type: 'input',
-        name: 'path',
-        message: 'Where do you want ',
-        default: process.cwd()
-    },{
-        type: 'list',
-        name: 'installType',
-        message: 'What type of install would you like?',
-        choices: ['Express', 'Custom']
-    }];
-
-    statement('Grasshopper Setup, please answer a few questions to get started.');
-
-    inquirer.prompt(questions, function( answers ) {
-        if(answers.installType === 'Express') {
-            validateProject(answers.path).then(
-                function(){
-                    installNpms();
-                },
-                function(err){
-                    error(err.message);
-                }
-            );
-        }
-    });*/
-}
-
-function setup(){
-    var questions = [{
-            type: 'input',
-            name: 'path',
-            message: 'Enter your project\'s home directory',
-            default: process.cwd()
-        },{
-            type: 'list',
-            name: 'installType',
-            message: 'What type of install would you like?',
-            choices: ['Quick', 'Custom']
-        }];
-
-    logger.statement('Grasshopper Setup, please answer a few questions to get started.');
-
-    inquirer.prompt(questions, function( answers ) {
-        var config = {
-                project: {
-                    home: answers.path
-                },
-                crypto: {
-                    secret: guid()
-                }
-            };
-
-        if(answers.installType === 'Quick') {
-            validateProject(config)
-                .then(steps.npms)
-                .then(steps.database)
-                //.then(configureAssets)
-                .then(steps.logger)
-                .then(writeConfig)
-                .catch(function(err){
-                    logger.error(err.message);
-                })
-                .done(function(results){
-                    console.log(results);
-                });
-        }
-    });
-}
