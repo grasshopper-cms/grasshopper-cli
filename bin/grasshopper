@@ -5,10 +5,8 @@ var program = require('commander'),
     output = require('../lib/utils/output'),
     commands = require('../lib/commands');
 
+output.welcome();
 program.version('0.0.1')
        .option('setup', 'Setup');
-
 program.on('setup', commands.setup);
-
-output.welcome();
 program.parse(process.argv);
