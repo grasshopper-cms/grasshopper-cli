@@ -13,8 +13,8 @@
         "debug": false
     },
     "assets": {
-        "default" : "<% assets.default %>",
-        "tmpdir" : "<% assets.tmpdir %>",
+        "default" : "<%= assets.default %>",
+        "tmpdir" : "<%= assets.tmpdir %>",
         "engines": <%= JSON.stringify(assets.engines) %>
     },
     "logger" : {

@@ -1,4 +1,4 @@
 {
-    "buildDirectory" : "<% admin.buildDirectory %>",
-    "apiEndpoint" : "<% admin.endPoint %>"
+    "buildDirectory" : "<%= admin.buildDirectory %>",
+    "apiEndpoint" : "<%= admin.endPoint %>"
 }
