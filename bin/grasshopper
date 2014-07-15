@@ -2,7 +2,7 @@
 'use strict';
 
 var program = require('commander'),
-    output = require('../lib/output'),
+    output = require('../lib/utils/output'),
     commands = require('../lib/commands');
 
 program.version('0.0.1')
