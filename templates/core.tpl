@@ -15,9 +15,9 @@
     "assets": {
         "default" : "<% assets.default %>",
         "tmpdir" : "<% assets.tmpdir %>",
-        "engines": <%= assets.engines %>
+        "engines": <%= JSON.stringify(assets.engines) %>
     },
     "logger" : {
-        "adapters": <%= logger.adapters %>
+        "adapters": <%= JSON.stringify(logger.adapters) %>
     }
 }
