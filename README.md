@@ -1,6 +1,5 @@
 # Grasshopper CLI
 
----------------------------------------------------------------------------------------------------------
 
 > Grasshopper's command line interface
 
@@ -13,11 +12,15 @@ To build a project you will have to the following:
 
 * Grunt, the JavaScript task runner
 
-> `npm install -g grunt-cli`
+```
+npm install -g grunt-cli
+```
 
 * bower
 
-> `npm install -g bower`
+```
+npm install -g bower
+```
 
 * Sass: Syntactically Awesome Style Sheets. [Click here](http://sass-lang.com/install) for installation instructions.
 
