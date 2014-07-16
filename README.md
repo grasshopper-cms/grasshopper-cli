@@ -10,13 +10,13 @@ To build a project you will have to the following:
 
 * [Node.js](http://nodejs.org/download/), a platform for easily building fast, scalable network applications.
 
-* Grunt, the JavaScript task runner
+* [Grunt](http://gruntjs.com/), the JavaScript task runner
 
 ```
 npm install -g grunt-cli
 ```
 
-* bower
+* [bower](http://bower.io/), a package manager for the web
 
 ```
 npm install -g bower
