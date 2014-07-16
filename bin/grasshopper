@@ -8,6 +8,9 @@ var program = require('commander'),
 
 output.welcome();
 program.version('GRASSHOPPER-CLI VERSION: ' + packageJson.version)
-       .option('jump', 'The jump command will walk you through installing Grasshopper dependencies and generate all necessary config files.');
+       .option('jump', 'The jump command will walk you through installing Grasshopper dependencies and generate all necessary config files.')
+       .option('fly', 'Automated Grasshopper setup. Scaffolding will be created for this project and files could be overwritten. ');
+
 program.on('jump', commands.jump);
+program.on('fly', commands.fly);
 program.parse(process.argv);
