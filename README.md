@@ -6,10 +6,21 @@
 
 ### Prerequisites
 
-To build a project you will also have to install `grunt` and `bower` if you have not already.
 
-    npm install -g grunt-cli
-    npm install -g bower
+To build a project you will have to the following:
+
+* [Node.js](http://nodejs.org/download/), a platform for easily building fast, scalable network applications.
+
+* Grunt, the JavaScript task runner
+
+> `npm install -g grunt-cli`
+
+* bower
+
+> `npm install -g bower`
+
+* Sass: Syntactically Awesome Style Sheets. [Click here](http://sass-lang.com/install) for installation instructions.
+
 
 ### Installation
 
