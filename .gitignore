@@ -4,3 +4,6 @@ desktop.ini
 node_modules/
 npm-debug.log
 build/
+gha.json
+ghapi.json
+app/
