@@ -30,3 +30,7 @@ npm install -g bower
 Install this `npm` globally to access Grasshopper utilities anywhere on your system.
 
     npm install -g grasshopper-cli
+
+### Commands
+
+* `grasshopper jump` - Grasshopper setup will walk you through installing Grasshopper dependencies and generate all necessary config files.

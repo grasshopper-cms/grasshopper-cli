@@ -3,10 +3,11 @@
 
 var program = require('commander'),
     output = require('../lib/utils/output'),
-    commands = require('../lib/commands');
+    commands = require('../lib/commands'),
+    packageJson = require('../package.json');
 
 output.welcome();
-program.version('0.1.0')
+program.version('GRASSHOPPER-CLI VERSION: ' + packageJson.version)
        .option('jump', 'The jump command will walk you through installing Grasshopper dependencies and generate all necessary config files.');
 program.on('jump', commands.jump);
 program.parse(process.argv);
