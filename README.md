@@ -24,6 +24,12 @@ npm install -g bower
 
 * Sass: Syntactically Awesome Style Sheets. [Click here](http://sass-lang.com/install) for installation instructions.
 
+* Sass Globbing Plugin (used to compile the admin): Sass globbing allows you to import many sass or scss files in a single import statement.
+
+```
+gem install sass-globbing
+```
+
 
 ### Installation
 
