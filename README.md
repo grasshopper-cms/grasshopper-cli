@@ -34,3 +34,5 @@ Install this `npm` globally to access Grasshopper utilities anywhere on your sys
 ### Commands
 
 * `grasshopper jump` - Grasshopper setup will walk you through installing Grasshopper dependencies and generate all necessary config files.
+
+* `grasshopper fly` - Automated Grasshopper setup. Scaffolding will be created for this project and files could be overwritten.
