@@ -1,6 +1,6 @@
 {
   "name": "grasshopper-cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Command line interface that manages the grasshopper data management system.",
   "main": "bin/grasshopper-admin.js",
   "scripts": {
