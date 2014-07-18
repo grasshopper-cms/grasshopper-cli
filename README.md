@@ -30,6 +30,11 @@ npm install -g bower
 gem install sass-globbing
 ```
 
+* Sass CSS Importer (used to compile the admin): The Sass CSS Importer allows you to import a CSS file into Sass.
+
+```
+gem install sass-css-importer
+```
 
 ### Installation
 
