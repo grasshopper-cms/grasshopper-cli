@@ -6,4 +6,4 @@ npm-debug.log
 build/
 gha.json
 ghapi.json
-app/
+./app/
