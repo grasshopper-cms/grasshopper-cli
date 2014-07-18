@@ -1,0 +1,19 @@
+doctype html
+html
+    head
+        title= content.fields.title
+        link(rel='stylesheet', href='/css/style.css')
+        link(rel='stylesheet', href='/css/chunkfive-fontface.css')
+    body
+        div#container
+            div#header
+                h1
+                    | Grasshopper Test Site
+            div#navigation
+                ul
+                    each val in content.fields.navigation
+                        li
+                            a(href="#{val.fields.href}")= val.fields.title
+            div#content
+                h2= content.fields.title
+                | !{content.fields.bodycontent}
