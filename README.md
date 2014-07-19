@@ -3,6 +3,8 @@
 
 > Grasshopper's command line interface
 
+Use Grasshopper to drastically speed up development for distributed systems. Support your clients better. For more information about the grasshopper project [click here](http://grasshopper.ws).
+
 ### Prerequisites
 
 
