@@ -16,4 +16,5 @@ program.version('GRASSHOPPER-CLI VERSION: ' + packageJson.version)
 program.on('jump', commands.jump);
 program.on('fly', commands.fly);
 program.on('upgrade', commands.upgrade);
+program.on('build', commands.build);
 program.parse(process.argv);
