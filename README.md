@@ -8,7 +8,7 @@ Use Grasshopper to drastically speed up development for distributed systems. Sup
 ### Prerequisites
 
 
-To build a project you will have to the following:
+To build a project you will have to do following:
 
 * [Node.js](http://nodejs.org/download/), a platform for easily building fast, scalable network applications.
 
