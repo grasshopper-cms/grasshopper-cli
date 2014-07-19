@@ -50,6 +50,8 @@ Install this `npm` globally to access Grasshopper utilities anywhere on your sys
 
 * `grasshopper fly` - Automated Grasshopper setup. Scaffolding will be created for this project and files could be overwritten.
 
+* `grasshopper upgrade` - Get the latest version of Grasshopper and rebuild into your existing project. Latest NPMs will be downloaded and the admin application will be recompiled using your existing configuration files. You should read the release notes for any changes that need to be made to your config files. Release notes can be found at [https://github.com/Solid-Interactive/grasshopper-api-js](https://github.com/Solid-Interactive/grasshopper-api-js).
+
 [Click here](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.mp4) to watch a video of installing and running a grasshopper project.
 
 ![grasshopper fly](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.png)
