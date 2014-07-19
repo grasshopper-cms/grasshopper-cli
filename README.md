@@ -47,3 +47,11 @@ Install this `npm` globally to access Grasshopper utilities anywhere on your sys
 * `grasshopper jump` - Grasshopper setup will walk you through installing Grasshopper dependencies and generate all necessary config files.
 
 * `grasshopper fly` - Automated Grasshopper setup. Scaffolding will be created for this project and files could be overwritten.
+
+![grasshopper fly](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.png)
+
+### Troubleshooting
+
+If for some reason building the grasshopper-admin fails then you can run `bundle install` manually. Just enter this command starting from your new project folder.
+
+`./node_modules/grasshopper-admin$  bundle install`
