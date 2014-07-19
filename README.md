@@ -50,7 +50,7 @@ Install this `npm` globally to access Grasshopper utilities anywhere on your sys
 
 * `grasshopper fly` - Automated Grasshopper setup. Scaffolding will be created for this project and files could be overwritten.
 
-[Click here] to watch a video of installing and running a grasshopper project.
+[Click here](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.mp4) to watch a video of installing and running a grasshopper project.
 
 ![grasshopper fly](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.png)
 
