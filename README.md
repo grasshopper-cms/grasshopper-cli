@@ -60,8 +60,18 @@ Install this `npm` globally to access Grasshopper utilities anywhere on your sys
 
 ![grasshopper fly](https://s3.amazonaws.com/SolidInteractive/images/grasshopper/grasshopper-cli-fly.png)
 
+### Contributions
+
+If you have a common pattern that involves Grasshopper, submit your recipe (npms, scaffolding, data). If it would be useful to a large enough audience it can be added into this project.
+
+Submit recommendations and issues to: [https://github.com/Solid-Interactive/grasshopper-cli/issues](https://github.com/Solid-Interactive/grasshopper-cli/issues)
+
 ### Troubleshooting
 
 If for some reason building the grasshopper-admin fails then you can run `bundle install` manually. Just enter this command starting from your new project folder.
 
 `./node_modules/grasshopper-admin$  bundle install`
+
+### License
+
+grasshopper-cli is released under a [MIT license](https://github.com/Solid-Interactive/grasshopper-cli/blob/master/LICENSE).
