@@ -12,6 +12,8 @@ To build a project you will have to the following:
 
 * [Node.js](http://nodejs.org/download/), a platform for easily building fast, scalable network applications.
 
+* [MongoDB](http://www.mongodb.org/), an open-source document database that Grasshopper uses for data storage.
+
 * [Grunt](http://gruntjs.com/), the JavaScript task runner
 
 ```
