@@ -5,16 +5,16 @@ var api = require('grasshopper-api'),
     core;
 
 var gh = {
-    api: grasshopper.ghApi
+    router: grasshopper.router
 }
 
 Object.defineProperty(gh, "core", {
     get: function() { return core; }
 });
 
-grasshopper.ghCore.event.channel('/system/db').on('start', function(payload, next){
-    grasshopper.ghCore.auth('basic', { username: 'admin', password: 'TestPassword' }).then(function(token) {
-        core = grasshopper.ghCore.request(token);
+grasshopper.core.event.channel('/system/db').on('start', function(payload, next){
+    grasshopper.core.auth('basic', { username: 'admin', password: 'TestPassword' }).then(function(token) {
+        core = grasshopper.core.request(token);
         next();
     });
 });
