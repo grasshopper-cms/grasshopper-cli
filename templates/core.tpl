@@ -12,6 +12,9 @@
         "defaultPageSize" : "10000",
         "debug": false
     },
+    "server" :{
+        "proxy": true
+    },
     "assets": {
         "default" : "<%= assets.default %>",
         "tmpdir" : "<%= assets.tmpdir %>",

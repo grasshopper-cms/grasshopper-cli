@@ -1,7 +1,7 @@
 'use strict';
 
 var api = require('grasshopper-api'),
-    grasshopper = api('use proxy'),
+    grasshopper = api(require('../../ghapi.json')),
     core;
 
 var gh = {
