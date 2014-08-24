@@ -10,5 +10,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(grasshopper.router);
 
+//Support for push state for admin
+app.get('/admin*?', function(request, response) {
+    response.sendfile(__dirname + '/public/admin/index.html');
+});
+
 require('./routes/main')(app);
 app.listen(PORT);
