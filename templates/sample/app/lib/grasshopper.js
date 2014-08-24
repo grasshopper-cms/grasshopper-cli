@@ -1,7 +1,7 @@
 'use strict';
 
 var api = require('grasshopper-api'),
-    grasshopper = api(require('../../ghapi.json')),
+    grasshopper = api(require('../../grasshopper-config.json')),
     core;
 
 var gh = {
