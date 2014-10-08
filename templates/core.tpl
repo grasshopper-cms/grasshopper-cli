@@ -12,6 +12,9 @@
         "defaultPageSize" : "10000",
         "debug": false
     },
+    "bodyParser" : {
+        "limit" : "5000000"
+    },
     "server" :{
         "proxy": true
     },
