@@ -40,6 +40,13 @@ gem install sass-globbing
 gem install sass-css-importer
 ```
 
+* [Bundler](http://bundler.io/): Bundler provides a consistent environment for Ruby projects by tracking and installing the exact gems and versions that are needed. 
+
+```
+gem install bundler
+```
+
+
 ### Installation
 
 Install this `npm` globally to access Grasshopper utilities anywhere on your system.
