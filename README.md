@@ -40,7 +40,7 @@ gem install sass-globbing
 gem install sass-css-importer
 ```
 
-* [Bundler](http://bundler.io/): Bundler provides a consistent environment for Ruby projects by tracking and installing the exact gems and versions that are needed. 
+* [Bundler](http://bundler.io/): Bundler provides a consistent environment for Ruby projects by tracking and installing the exact gems and versions that are needed.
 
 ```
 gem install bundler
@@ -74,6 +74,14 @@ If you have a common pattern that involves Grasshopper, submit your recipe (npms
 Submit recommendations and issues to: [https://github.com/Solid-Interactive/grasshopper-cli/issues](https://github.com/Solid-Interactive/grasshopper-cli/issues)
 
 ### Troubleshooting
+
+Ensure that you have the latest grasshopper-cli installed. To update, run `npm update -g grasshopper-cli`.
+
+Ensure that you are using `ruby 2.0.0`. With RVM you can do `rvm install 2.0.0 && rvm use 2.0.0`. Also, ensure that you have bundler installed. type `gem install -g bundler`.
+
+If you get this error after running grasshopper fly twice for the same project:
+`insertDocument :: caused by :: 11000 E11000 duplicate key error index: somedatabase.content.$_id_  dup key: { : ObjectId('53c85bb59c38840000cae250') }`
+You need to clear out your mongo databases. Enter the mongo repl with `mongo` then type `show dbs` to list out the local mongo databases.  Find the database giving you the errors ( in the above error the database name is 'somedatabase') then type `use <database name>`.  Once you are using the proper database, type `db.dropDatabase()` to drop it. This will let you run grasshopper fly again without duplicate key errors.
 
 If for some reason building the grasshopper-admin fails then you can run `bundle install` manually. Just enter this command starting from your new project folder.
 
