@@ -13,7 +13,7 @@
         "debug": false
     },
     "bodyParser" : {
-        "limit" : "5000000"
+        "limit" : "5mb"
     },
     "server" :{
         "proxy": true
