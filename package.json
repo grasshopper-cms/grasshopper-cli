@@ -1,36 +1,12 @@
 {
-  "name": "grasshopper-cli",
-  "version": "0.1.20",
-  "description": "Command line interface that manages the grasshopper data management system.",
-  "main": "bin/grasshopper-admin.js",
-  "scripts": {
-    "start": "./bin/grasshopper"
-  },
-  "bin": {
-    "grasshopper": "./bin/grasshopper"
-  },
-  "preferGlobal": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Solid-Interactive/grasshopper-cli.git"
-  },
-  "author": "Travis McHattie",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Solid-Interactive/grasshopper-cli/issues"
-  },
-  "homepage": "https://github.com/Solid-Interactive/grasshopper-cli",
-  "dependencies": {
-    "grunt": "~0.4.4",
-    "commander": "~2.2.0",
-    "inquirer": "~0.4.1",
-    "cli-color": "~0.2.3",
-    "q": "^1.0.1",
-    "mongodb": "^1.4.7",
-    "lodash": "^2.4.1"
-  },
-  "devDependencies": {
-    "mocha": "^1.20.1",
-    "chai": "^1.9.1"
-  }
+    "name": "grasshopper-cli",
+    "version": "0.0.2",
+    "description": "",
+    "main": "app/grasshopper-cli.js",
+    "scripts": {
+        "start": "app/grasshopper-cli.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": ""
 }
